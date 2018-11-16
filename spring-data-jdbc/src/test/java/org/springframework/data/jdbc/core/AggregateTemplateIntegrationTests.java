@@ -276,14 +276,14 @@ public class AggregateTemplateIntegrationTests {
 
 		LegoSet reloadedLegoSet = template.findById(legoSet.getId(), LegoSet.class);
 
-		assertThat(reloadedLegoSet.alternativeInstructions).isNull();
+		assertThat(reloadedLegoSet.alt).isNull();
 	}
 
 	@Test // DATAJDBC-125
 	public void saveAndLoadAnEntityWithSecondaryReferenceNotNull() {
 
-		legoSet.alternativeInstructions = new Manual();
-		legoSet.alternativeInstructions.content = "alternative content";
+		legoSet.alt = new Manual();
+		legoSet.alt.content = "alternative content";
 		template.save(legoSet);
 
 		assertThat(legoSet.manual.id).describedAs("id of stored manual").isNotNull();
@@ -291,11 +291,11 @@ public class AggregateTemplateIntegrationTests {
 		LegoSet reloadedLegoSet = template.findById(legoSet.getId(), LegoSet.class);
 
 		SoftAssertions softly = new SoftAssertions();
-		softly.assertThat(reloadedLegoSet.alternativeInstructions).isNotNull();
-		softly.assertThat(reloadedLegoSet.alternativeInstructions.id).isNotNull();
-		softly.assertThat(reloadedLegoSet.alternativeInstructions.id).isNotEqualTo(reloadedLegoSet.manual.id);
-		softly.assertThat(reloadedLegoSet.alternativeInstructions.content)
-				.isEqualTo(reloadedLegoSet.alternativeInstructions.content);
+		softly.assertThat(reloadedLegoSet.alt).isNotNull();
+		softly.assertThat(reloadedLegoSet.alt.id).isNotNull();
+		softly.assertThat(reloadedLegoSet.alt.id).isNotEqualTo(reloadedLegoSet.manual.id);
+		softly.assertThat(reloadedLegoSet.alt.content)
+				.isEqualTo(reloadedLegoSet.alt.content);
 
 		softly.assertAll();
 	}
@@ -339,7 +339,7 @@ public class AggregateTemplateIntegrationTests {
 		private String name;
 
 		private Manual manual;
-		@Column("alternative") private Manual alternativeInstructions;
+		@Column("alternative") private Manual alt; // Michael Bahr: renamed this to alt, as alternativeInstructions_content was too long for oracle
 	}
 
 	@Data

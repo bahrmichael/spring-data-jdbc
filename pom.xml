@@ -184,6 +184,24 @@
 									</systemPropertyVariables>
 								</configuration>
 							</execution>
+							<execution>
+								<id>oracle-test</id>
+								<phase>test</phase>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<configuration>
+									<includes>
+										<include>**/*IntegrationTests.java</include>
+									</includes>
+									<excludes>
+										<exclude>**/*HsqlIntegrationTests.java</exclude>
+									</excludes>
+									<systemPropertyVariables>
+										<spring.profiles.active>oracle</spring.profiles.active>
+									</systemPropertyVariables>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 				</plugins>

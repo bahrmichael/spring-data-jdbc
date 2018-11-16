@@ -78,7 +78,7 @@ public class DefaultDataAccessStrategy implements DataAccessStrategy {
 		this.accessStrategy = this;
 	}
 
-	/* 
+	/*
 	 * (non-Javadoc)
 	 * @see org.springframework.data.jdbc.core.DataAccessStrategy#insert(java.lang.Object, java.lang.Class, java.util.Map)
 	 */
@@ -107,7 +107,8 @@ public class DefaultDataAccessStrategy implements DataAccessStrategy {
 		operations.update( //
 				sql(domainType).getInsert(parameters.keySet()), //
 				parameterSource, //
-				holder //
+				holder, //
+				idProperty != null ? new String[]{idProperty.getColumnName()} : (String[])null //
 		);
 
 		return getIdFromHolder(holder, persistentEntity);
