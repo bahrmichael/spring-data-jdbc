@@ -50,6 +50,7 @@ import org.springframework.util.Assert;
  * @author Jens Schauder
  * @author Mark Paluch
  * @author Thomas Lang
+ * @author Michael Bahr
  */
 @RequiredArgsConstructor
 public class DefaultDataAccessStrategy implements DataAccessStrategy {
@@ -108,7 +109,8 @@ public class DefaultDataAccessStrategy implements DataAccessStrategy {
 				sql(domainType).getInsert(parameters.keySet()), //
 				parameterSource, //
 				holder, //
-				idProperty != null ? new String[]{idProperty.getColumnName()} : (String[])null //
+				// TODO: HSQL needs the column name to be uppercase, while postgres wants it lower case
+				idProperty != null ? new String[]{idProperty.getColumnName().toUpperCase()} : (String[])null //
 		);
 
 		return getIdFromHolder(holder, persistentEntity);

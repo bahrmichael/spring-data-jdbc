@@ -33,9 +33,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.data.jdbc.repository.support.JdbcRepositoryFactory;
 import org.springframework.data.jdbc.repository.support.SimpleJdbcRepository;
+import org.springframework.data.jdbc.testing.DatabaseProfileValueSource;
 import org.springframework.data.relational.core.mapping.NamingStrategy;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.IfProfileValue;
+import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
@@ -45,8 +48,11 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
  *
  * @author Jens Schauder
  * @author Greg Turnquist
+ * @author Michael Bahr
  */
 @ContextConfiguration
+@ProfileValueSourceConfiguration(DatabaseProfileValueSource.class) // DATAJDBC-256
+@IfProfileValue(name = "current.database.is.not.oracle", value = "true") // DATAJDBC-256
 public class JdbcRepositoryIdGenerationIntegrationTests {
 
 	@Configuration

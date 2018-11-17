@@ -339,7 +339,7 @@ public class AggregateTemplateIntegrationTests {
 		private String name;
 
 		private Manual manual;
-		@Column("alternative") private Manual alt; // Michael Bahr: renamed this to alt, as alternativeInstructions_content was too long for oracle
+		@Column("alternative") private Manual alt;
 	}
 
 	@Data

@@ -61,7 +61,7 @@ public class OracleDataSourceConfiguration extends DataSourceConfiguration {
 	@Override
 	protected void customizePopulator(ResourceDatabasePopulator populator) {
 		populator.setIgnoreFailedDrops(true);
-		populator.setSeparator("§"); // Michael Bahr: this was first free special character I found, free to change as needed
+		populator.setSeparator("§");
 	}
 
 }

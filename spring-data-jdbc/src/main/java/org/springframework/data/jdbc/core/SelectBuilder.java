@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
  * {@link JdbcAggregateTemplate}.
  *
  * @author Jens Schauder
+ * @author Michael Bahr
  */
 class SelectBuilder {
 
@@ -110,7 +111,6 @@ class SelectBuilder {
 		return joins.stream().map(j -> joinTable(j) + joinConditions(j)).collect(Collectors.joining(" "));
 	}
 
-	// Michael Bahr: Removed the AS to fix Oracle's "missing keyword" error
 	private String joinTable(Join j) {
 		return String.format("%s JOIN %s %s", j.outerJoinModifier(), j.table, j.as);
 	}
