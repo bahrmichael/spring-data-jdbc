@@ -57,10 +57,12 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Jens Schauder
  * @author Thomas Lang
+ * @author Michael Bahr
  */
 @ContextConfiguration
 @ProfileValueSourceConfiguration(DatabaseProfileValueSource.class)
 @Transactional
+@IfProfileValue(name = "current.database.is.not.oracle", value = "true") // DATAJDBC-256
 public class JdbcRepositoryPropertyConversionIntegrationTests {
 
 	@Configuration

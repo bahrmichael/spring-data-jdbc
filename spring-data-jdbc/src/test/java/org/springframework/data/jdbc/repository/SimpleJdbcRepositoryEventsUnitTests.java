@@ -223,7 +223,7 @@ public class SimpleJdbcRepositoryEventsUnitTests {
 		};
 
 		NamedParameterJdbcOperations operations = mock(NamedParameterJdbcOperations.class);
-		when(operations.update(anyString(), any(SqlParameterSource.class), any(KeyHolder.class)))
+		when(operations.update(anyString(), any(SqlParameterSource.class), any(KeyHolder.class), any()))
 				.thenAnswer(setIdInKeyHolder);
 		return operations;
 	}

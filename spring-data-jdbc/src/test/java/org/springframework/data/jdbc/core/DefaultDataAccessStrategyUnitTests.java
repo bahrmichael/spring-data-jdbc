@@ -46,6 +46,7 @@ import org.springframework.jdbc.support.KeyHolder;
  *
  * @author Jens Schauder
  * @author Mark Paluch
+ * @author Michael Bahr
  */
 public class DefaultDataAccessStrategyUnitTests {
 
@@ -72,7 +73,7 @@ public class DefaultDataAccessStrategyUnitTests {
 		accessStrategy.insert(new DummyEntity(ORIGINAL_ID), DummyEntity.class, additionalParameters);
 
 		verify(jdbcOperations).update(eq("INSERT INTO dummy_entity (id) VALUES (:id)"), paramSourceCaptor.capture(),
-				any(KeyHolder.class));
+				any(KeyHolder.class), any());
 	}
 
 	@Test // DATAJDBC-146
@@ -84,7 +85,7 @@ public class DefaultDataAccessStrategyUnitTests {
 
 		accessStrategy.insert(new DummyEntity(ORIGINAL_ID), DummyEntity.class, additionalParameters);
 
-		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class));
+		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class), any());
 
 		assertThat(sqlCaptor.getValue()) //
 				.containsSequence("INSERT INTO dummy_entity (", "id", ") VALUES (", ":id", ")") //
@@ -110,7 +111,7 @@ public class DefaultDataAccessStrategyUnitTests {
 
 		accessStrategy.insert(entity, EntityWithBoolean.class, new HashMap<>());
 
-		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class));
+		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class), any());
 
 		assertThat(paramSourceCaptor.getValue().getValue("id")).isEqualTo(ORIGINAL_ID);
 		assertThat(paramSourceCaptor.getValue().getValue("flag")).isEqualTo("T");

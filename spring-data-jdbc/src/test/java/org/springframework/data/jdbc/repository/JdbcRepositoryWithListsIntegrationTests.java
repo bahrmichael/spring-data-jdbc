@@ -54,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration
 @ProfileValueSourceConfiguration(DatabaseProfileValueSource.class)
 @Transactional
+@IfProfileValue(name = "current.database.is.not.oracle", value = "true") // DATAJDBC-256
 public class JdbcRepositoryWithListsIntegrationTests {
 
 	@Configuration
