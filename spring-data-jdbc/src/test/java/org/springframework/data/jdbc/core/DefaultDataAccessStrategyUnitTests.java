@@ -65,7 +65,7 @@ public class DefaultDataAccessStrategyUnitTests {
 			converter, //
 			jdbcOperations);
 
-	@Test // DATAJDBC-146
+	@Test // DATAJDBC-146, DATAJDBC-256
 	public void additionalParameterForIdDoesNotLeadToDuplicateParameters() {
 
 		additionalParameters.put("id", ID_FROM_ADDITIONAL_VALUES);
@@ -76,7 +76,7 @@ public class DefaultDataAccessStrategyUnitTests {
 				any(KeyHolder.class), any());
 	}
 
-	@Test // DATAJDBC-146
+	@Test // DATAJDBC-146, DATAJDBC-256
 	public void additionalParametersGetAddedToStatement() {
 
 		ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
@@ -93,7 +93,7 @@ public class DefaultDataAccessStrategyUnitTests {
 		assertThat(paramSourceCaptor.getValue().getValue("id")).isEqualTo(ORIGINAL_ID);
 	}
 
-	@Test // DATAJDBC-235
+	@Test // DATAJDBC-235, DATAJDBC-256
 	public void considersConfiguredWriteConverter() {
 
 		RelationalConverter converter = new BasicRelationalConverter(context,
