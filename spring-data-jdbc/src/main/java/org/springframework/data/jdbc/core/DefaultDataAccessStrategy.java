@@ -361,6 +361,9 @@ public class DefaultDataAccessStrategy implements DataAccessStrategy {
 	@Nullable
 	private String getDatabaseProductName(final NamedParameterJdbcOperations operations) {
 		final JdbcTemplate jdbcOperations = (JdbcTemplate) operations.getJdbcOperations();
+		if (jdbcOperations == null) {
+			return null;
+		}
 		try {
 			return jdbcOperations.getDataSource().getConnection().getMetaData().getDatabaseProductName();
 		} catch (SQLException e) {
