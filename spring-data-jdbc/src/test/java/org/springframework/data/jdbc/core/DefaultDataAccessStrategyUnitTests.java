@@ -58,7 +58,6 @@ public class DefaultDataAccessStrategyUnitTests {
 	RelationalConverter converter = new BasicRelationalConverter(context, new JdbcCustomConversions());
 	HashMap<String, Object> additionalParameters = new HashMap<>();
 	ArgumentCaptor<SqlParameterSource> paramSourceCaptor = ArgumentCaptor.forClass(SqlParameterSource.class);
-	ArgumentCaptor<String[]> idCaptor = ArgumentCaptor.forClass(String[].class);
 
 	DefaultDataAccessStrategy accessStrategy = new DefaultDataAccessStrategy( //
 			new SqlGeneratorSource(context), //
@@ -74,7 +73,7 @@ public class DefaultDataAccessStrategyUnitTests {
 		accessStrategy.insert(new DummyEntity(ORIGINAL_ID), DummyEntity.class, additionalParameters);
 
 		verify(jdbcOperations).update(eq("INSERT INTO dummy_entity (id) VALUES (:id)"), paramSourceCaptor.capture(),
-				any(KeyHolder.class), idCaptor.capture());
+				any(KeyHolder.class), any());
 	}
 
 	@Test // DATAJDBC-146
@@ -86,13 +85,12 @@ public class DefaultDataAccessStrategyUnitTests {
 
 		accessStrategy.insert(new DummyEntity(ORIGINAL_ID), DummyEntity.class, additionalParameters);
 
-		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class), idCaptor.capture());
+		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class), any());
 
 		assertThat(sqlCaptor.getValue()) //
 				.containsSequence("INSERT INTO dummy_entity (", "id", ") VALUES (", ":id", ")") //
 				.containsSequence("INSERT INTO dummy_entity (", "reference", ") VALUES (", ":reference", ")");
 		assertThat(paramSourceCaptor.getValue().getValue("id")).isEqualTo(ORIGINAL_ID);
-		assertThat(idCaptor.getValue()[0]).isEqualTo("ID");
 	}
 
 	@Test // DATAJDBC-235
@@ -113,11 +111,10 @@ public class DefaultDataAccessStrategyUnitTests {
 
 		accessStrategy.insert(entity, EntityWithBoolean.class, new HashMap<>());
 
-		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class), idCaptor.capture());
+		verify(jdbcOperations).update(sqlCaptor.capture(), paramSourceCaptor.capture(), any(KeyHolder.class), any());
 
 		assertThat(paramSourceCaptor.getValue().getValue("id")).isEqualTo(ORIGINAL_ID);
 		assertThat(paramSourceCaptor.getValue().getValue("flag")).isEqualTo("T");
-		assertThat(idCaptor.getValue()[0]).isEqualTo("ID");
 	}
 
 	@RequiredArgsConstructor

@@ -18,9 +18,11 @@ package org.springframework.data.jdbc.core;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -36,6 +38,7 @@ import org.springframework.data.relational.core.mapping.RelationalMappingContext
 import org.springframework.data.relational.core.mapping.RelationalPersistentEntity;
 import org.springframework.data.relational.core.mapping.RelationalPersistentProperty;
 import org.springframework.data.util.ClassTypeInformation;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -103,14 +106,15 @@ public class DefaultDataAccessStrategy implements DataAccessStrategy {
 					converter.writeValue(idValue, ClassTypeInformation.from(idProperty.getColumnType())));
 		}
 
+		final Optional<String> idColumnName = getIdColumnNameIfOracle(idProperty);
+
 		parameters.forEach(parameterSource::addValue);
 
 		operations.update( //
 				sql(domainType).getInsert(parameters.keySet()), //
 				parameterSource, //
 				holder, //
-				// TODO: HSQL needs the column name to be uppercase, while postgres wants it lower case
-				idProperty != null ? new String[]{idProperty.getColumnName().toUpperCase()} : (String[])null //
+				idColumnName.isPresent() ? new String[]{idColumnName.get()} : (String[])null //
 		);
 
 		return getIdFromHolder(holder, persistentEntity);
@@ -341,6 +345,29 @@ public class DefaultDataAccessStrategy implements DataAccessStrategy {
             return keys.get(persistentEntity.getIdColumn());
         }
     }
+
+    private Optional<String> getIdColumnNameIfOracle(final RelationalPersistentProperty idProperty) {
+        if (idProperty == null) {
+            return Optional.empty();
+        }
+        final String databaseProductName = getDatabaseProductName(operations);
+        if (databaseProductName != null && databaseProductName.toLowerCase().contains("oracle")) {
+            return Optional.of(idProperty.getColumnName());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+	@Nullable
+	private String getDatabaseProductName(final NamedParameterJdbcOperations operations) {
+		final JdbcTemplate jdbcOperations = (JdbcTemplate) operations.getJdbcOperations();
+		try {
+			return jdbcOperations.getDataSource().getConnection().getMetaData().getDatabaseProductName();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	private EntityRowMapper<?> getEntityRowMapper(Class<?> domainType) {
 		return new EntityRowMapper<>(getRequiredPersistentEntity(domainType), context, converter, accessStrategy);
